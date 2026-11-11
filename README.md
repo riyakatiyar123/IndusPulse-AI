@@ -10,11 +10,9 @@ An AI-powered, voice-first industrial safety and incident management platform th
 
 Built for the Gnani AI Great Indian AI Internship Challenge.
 
-Live Demo · GitHub Repository
-
 </div>
 
-⸻
+
 
 The Problem
 
@@ -166,7 +164,7 @@ All machine records, incident histories, maintenance schedules, and test dataset
 
 Safety alerts are simulated using predefined deterministic rules. KAIZER is a demonstration project and is not connected to real industrial alarm systems.
 
-⸻
+
 
 <div align="center">
 

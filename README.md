@@ -1,136 +1,278 @@
+<div align="center">
 
+KAIZER
 
-A factory worker reports a problem by voice (Hindi, English or Hinglish). PlantPulse turns it into a structured incident, checks the machine's records and the safety manual, raises a simulated alert using fixed safety rules, and shows it on a supervisor dashboard.
+Making Industrial Safety Smarter with AI.
 
-Built for Gnani AI's Great Indian AI Internship Challenge. **All data in this repo is synthetic.**
+Don’t just hear the danger. Outsmart it. Act on it. Eliminate it.
 
-See `CLAUDE.md` for the project brief and `NOTES.md` for a phase-by-phase build log.
+An AI-powered, voice-first industrial safety and incident management platform that transforms factory-floor conversations into structured incidents, intelligent investigations, and actionable safety insights.
 
-## Run with Docker (Mac)
+Built for the Gnani AI Great Indian AI Internship Challenge.
 
-Works on Apple Silicon (M1/M2/M3/M4) and Intel Macs. You only need Docker Desktop and two API keys.
+Live Demo · GitHub Repository
 
-**Before the first time**
+</div>
 
-1. Install **Docker Desktop** from https://www.docker.com/products/docker-desktop/ — pick "Mac with Apple chip"
-   or "Mac with Intel chip" (Apple menu  → About This Mac shows which one you have).
-2. Open Docker Desktop and wait until it says **Engine running** (whale icon in the top menu bar).
-3. Have your keys ready: a **Gnani API key** and a **Google Gemini API key** (from aistudio.google.com).
+⸻
 
-**Run it** — open the **Terminal** app and type these, one line at a time, pressing Enter after each:
+The Problem
 
-```bash
-git clone https://github.com/riyakatiyar123/IndusPulse-AI.git
-cd IndusPulse-AI
-cp backend/.env.example backend/.env
-open -e backend/.env
-```
+Imagine a factory worker noticing smoke coming from Machine M-40.
 
-- If the Mac asks to install "command line developer tools" (for `git`), click **Install**, wait, then run
-  the `git clone` line again. If GitHub asks you to sign in, ask the repo owner to add you as a collaborator.
-- The last line opens `backend/.env` in TextEdit. Paste your Gnani key right after `GNANI_API_KEY=` and your
-  Gemini key right after `LLM_API_KEY=` (no spaces, no quotes). Everything else is already filled in.
-  Save (⌘S) and close TextEdit.
+He picks up a walkie-talkie and reports:
 
-Then start everything:
+“Attention! There’s smoke coming from M-40. Someone please check.”
 
-```bash
-docker compose up --build
-```
+Everyone hears the message.
 
-The first start takes a few minutes (it downloads and builds everything). It is ready when you see
-`backend-1 | ... Uvicorn running on http://0.0.0.0:8000` and `frontend-1 | ✓ Ready in ...`.
-Leave this Terminal window open.
+But what happens next?
 
-Open **http://localhost:3000** in **Chrome**. You should see the PlantPulse AI dashboard with 6 synthetic past
-incidents. On **Report Incident**, click the purple mic and choose **Allow** when Chrome asks for the microphone.
+* Was the incident officially recorded?
+* Who is responsible for investigating it?
+* Was the machine actually inspected?
+* Will the next shift know about the incident?
+* What if M-40 develops the same problem tomorrow?
 
-- **Stop:** press `Ctrl + C` in that Terminal window.
-- **Start again later:** `cd IndusPulse-AI` then `docker compose up` (no `--build` needed unless the code changed).
-- **Get the latest code:** `git pull` then `docker compose up --build`.
-- **Start over with clean demo data:** `docker compose down -v` (deletes the saved incidents), then `docker compose up`.
-- Your data (incidents, cached voice audio) is kept between restarts in Docker volumes. Your keys stay in
-  `backend/.env` on your Mac and are never copied into the Docker images.
-- "Port is already allocated": something else is using port 3000 or 8000 — quit it (or other PlantPulse
-  windows) and run `docker compose up` again.
+Traditional communication tools, such as two-way radios, are effective for immediate communication. However, they were never designed to manage the complete lifecycle of an industrial safety incident.
 
-## Run the backend
+Communication is not the same as incident management.
 
-First time only (Windows, from the repo root):
+There is a critical gap between reporting a problem and ensuring that it is investigated, documented, tracked, and addressed.
 
-```powershell
-cd backend
-python -m venv .venv
-.venv\Scripts\pip install -r requirements.txt
-copy .env.example .env   # then fill in keys (not needed for Phase 1)
-```
+That is the gap KAIZER is built to solve.
 
-Start it — **one command**, from `backend/`:
+⸻
 
-```powershell
-.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000
-```
+Our Solution
 
-The first start creates `backend/plantpulse.db` and loads the synthetic data automatically.
-Open http://localhost:8000/docs to try every endpoint.
+KAIZER transforms voice-based factory incident reporting into an intelligent, end-to-end incident management workflow.
 
-Wipe and re-seed the database: `.venv\Scripts\python -m app.seed`
+Factory workers can report problems naturally in Hindi, English, or Hinglish, without navigating complicated forms or manually documenting incidents.
 
-## Speech-to-text (Gnani Prisma v3.0)
+By combining Voice AI, Agentic AI, Retrieval-Augmented Generation (RAG), and deterministic safety rules, KAIZER ensures that incidents are not simply heard but also understood, investigated, and tracked.
 
-Needs `GNANI_API_KEY` in `backend/.env` and ffmpeg installed (`winget install Gyan.FFmpeg`). Every result is
-cached in `backend/cache/` by the audio's SHA-256, so the same file never costs credits twice.
+How KAIZER Works
 
-Try one file from the command line (from `backend/`):
+Stage	Function	Description
+01	Voice-Based Reporting	Workers report incidents naturally in Hindi, English, or Hinglish.
+02	Speech-to-Text	Gnani AI Prisma converts recorded speech into text.
+03	Incident Extraction	An LLM extracts relevant information and generates structured incident records.
+04	Ambiguity Detection	KAIZER identifies unclear information and asks confirm-back questions through voice.
+05	Safety Assessment	Deterministic safety rules identify predefined hazards and trigger simulated critical alerts.
+06	Duplicate Detection	Potential duplicate incident reports are identified.
+07	Agentic Investigation	An AI investigation agent examines machine history, maintenance schedules, and open tickets.
+08	SOP Retrieval	RAG retrieves relevant information from Standard Operating Procedures.
+09	Recommendations	Investigation insights and actionable recommendations are presented to supervisors.
+10	Incident Tracking	Incidents remain documented and accessible across shifts.
+11	Voice Responses	Gnani AI Timbre generates acknowledgements, confirmation questions, and shift-handover summaries.
 
-```powershell
-.venv\Scripts\python -m app.scripts.try_stt path\to\audio.wav
-```
+⸻
 
-## LLM extraction + safety rules
+Application Preview
 
-`backend/.env` needs `LLM_BASE_URL`, `LLM_MODEL`, `LLM_API_KEY` (any OpenAI-compatible provider; we use
-Google Gemini `gemini-3.1-flash-lite`, with `gemini-3.6-flash` as `LLM_FALLBACK_MODEL` when rate-limited, and
-`LLM_MAX_RPM=12`). If the LLM fails or times out (20 s), a keyword extractor takes over.
-Fixed safety rules live in `backend/app/safety/safety_rules.yaml` and always run, LLM or not.
+KAIZER provides a centralized supervisor interface for monitoring factory incidents, investigating machine issues, and tracking operational safety.
 
-Run the tests (from `backend/`, they never call the real LLM):
+01. Supervisor Dashboard
 
-```powershell
-.venv\Scripts\python -m pytest -q
-```
+A centralized overview of factory incidents, their severity, current status, and machine conditions.
 
-## Voice (Gnani Timbre text-to-speech)
+02. Voice-Based Incident Reporting
 
-Spoken acknowledgements, confirmation questions and the shift-handover summary use Timbre `timbre-v2.5`
-(hi-IN) through the `gnani-vachana` SDK. Pick the voice with `TTS_VOICE` in `backend/.env` (default `Urmila`).
-Audio is cached in `backend/cache/tts/` by text, so a sentence is only paid for once. Use the
-"Voice on / off" button in the header to mute.
+Workers can report incidents using a simple voice interface, supporting Hindi, English, and Hinglish.
 
-## Run the frontend
+03. Incident Management
 
-First time only: `cd frontend` then `npm install`.
+A centralized incident register displaying reported incidents, machine identification, severity levels, and resolution status.
 
-Start it — **one command**, from `frontend/`:
+04. Machine Insights
 
-```powershell
-npm run dev
-```
+Monitor machine health, active issues, upcoming maintenance, and historical machine information.
 
-Open http://localhost:3000.
+05. Shift Handover
 
-**Run both together:** open two terminals — start the backend in `backend/` (command above), then `npm run dev` in `frontend/`.
+Provides supervisors with a consolidated view of open and important incidents, along with AI-generated voice summaries for shift continuity.
 
-## Recording a demo
+06. AI Performance & Analytics
 
-Set `ALLOW_DEMO_RESET=true` in `backend/.env` (dev only) and restart the backend. Then in the app open
-**Settings → Reset demo**: it deletes every incident and restores the clean seed (6 past incidents, 16 machines,
-open tickets). The button only appears under `npm run dev`.
+Monitor incident processing metrics, LLM response times, fallback rates, safety events, and model-reported confidence.
 
-## Repo layout
+⸻
 
-- `backend/` — FastAPI + SQLAlchemy + SQLite (port 8000)
-- `frontend/` — Next.js dashboard (port 3000)
-- `data/` — synthetic machines, history, tickets, maintenance dates, safety manual (`sop.md`), test utterances
-- `eval/` — evaluation scripts and results (later phase)
-- `design/mockup.png` — UI layout and colour reference only
+Technology Stack
+
+KAIZER combines modern web technologies, voice intelligence, and AI-powered investigation workflows.
+
+Layer	Technologies
+Frontend	Next.js 16, React.js, TypeScript, Tailwind CSS
+Backend	Python, FastAPI
+Database	SQLite, SQLAlchemy
+Speech-to-Text	Gnani AI Prisma v3.0
+Text-to-Speech	Gnani AI Timbre v2.5
+LLM	Google Gemini
+Agentic AI	AI-powered investigation workflows
+Retrieval	Retrieval-Augmented Generation (RAG)
+Safety Engine	Python, YAML-based deterministic rules
+Duplicate Detection	Incident similarity and duplicate detection logic
+Infrastructure	Docker, Docker Compose
+Data Management	JSON-based synthetic machine records, incident histories, maintenance schedules, and tickets
+
+⸻
+
+Engineering Highlights
+
+1. Voice-First Interaction
+
+Enables workers to report incidents naturally without depending on manual forms or technical knowledge.
+
+2. Reliable Safety Decisions
+
+Critical hazard detection is handled through deterministic Python-based rules rather than relying entirely on LLM-generated decisions.
+
+3. Context-Aware Investigation
+
+The investigation agent retrieves machine history, maintenance records, open tickets, and relevant SOP information before generating recommendations.
+
+4. Ambiguity Handling
+
+When machine identification or incident information is unclear, KAIZER uses confirm-back conversations to obtain clarification instead of making assumptions.
+
+5. Incident Continuity
+
+Structured incident records and shift-handover summaries help ensure that important information remains accessible to subsequent teams.
+
+6. Voice Intelligence
+
+Gnani AI Prisma and Timbre power the speech-to-text and text-to-speech capabilities, enabling multilingual voice interaction.
+
+⸻
+
+Team & Work Distribution
+
+KAIZER was developed collaboratively through two primary technical workstreams, supported by dedicated testing and validation.
+
+Ansh Singh
+
+Voice AI | Speech Intelligence | Agentic AI
+
+* Audio capture and voice input processing.
+* Integration of Gnani AI Prisma (Speech-to-Text).
+* Voice understanding and structured incident extraction.
+* Ambiguity detection and confirm-back conversations.
+* Gnani AI Timbre (Text-to-Speech) integration.
+* Voice pipeline and incident workflow integration.
+* Hinglish voice testing and evaluation.
+* Video editing and production.
+
+Riya Katiyar
+
+Backend Engineering | Agentic AI | Application Intelligence
+
+* FastAPI backend and REST API development.
+* Database design and management for machines, incidents, tickets, and event logs.
+* Agentic investigation workflows for machine history and maintenance records.
+* RAG implementation for SOP search and retrieval.
+* Duplicate incident detection and deterministic safety rule implementation.
+* Frontend integration and application workflow development.
+* Docker integration and end-to-end system testing.
+
+Bhindu
+
+Testing | Validation | Demonstration
+
+* Application testing and quality assurance.
+* Voice reporting evaluation using 30 sample audio clips.
+* Docker-based deployment validation.
+* Demo preparation and supporting project activities.
+
+⸻
+
+Project Impact & Vision
+
+KAIZER aims to move industrial safety beyond communication and toward intelligent incident management.
+
+The broader vision is to help factories establish a system where:
+
+* Every reported incident becomes traceable.
+* Every critical alert receives visibility.
+* Machine history contributes to better investigations.
+* Safety procedures are accessible when needed.
+* Shift transitions preserve important operational knowledge.
+* Repeated incidents can be identified and investigated.
+
+Instead of treating every incident as an isolated event, KAIZER connects reporting, investigation, and historical context into one workflow.
+
+⸻
+
+Important Note
+
+All machine records, incident histories, maintenance schedules, open tickets, and test datasets used in this project are synthetic.
+
+Safety alerts are simulated using predefined deterministic rules. KAIZER is a demonstration project and is not connected to real industrial alarm systems.
+
+⸻
+
+Built With
+
+Voice AI: Gnani AI Prisma · Gnani AI Timbre
+
+Artificial Intelligence: Google Gemini · Agentic AI · RAG
+
+Backend: Python · FastAPI · SQLAlchemy · SQLite
+
+Frontend: Next.js · React · TypeScript · Tailwind CSS
+
+Infrastructure: Docker · Docker Compose
+
+⸻
+
+<div align="center">
+
+Don’t just hear the danger.
+
+Outsmart it. Act on it. Eliminate it.
+
+Your factory. Your people. Your safety.
+
+One intelligent force. KAIZER.
+
+</div>
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <h3>Supervisor Dashboard</h3>
+      <img src="screenshots/dashboard.png" width="100%" alt="KAIZER Supervisor Dashboard">
+      <p>Real-time incident monitoring, severity tracking, and factory status overview.</p>
+    </td>
+    <td width="50%" align="center">
+      <h3>Voice-Based Incident Reporting</h3>
+      <img src="screenshots/voice-reporting.jpeg" width="100%" alt="KAIZER Voice Reporting">
+      <p>Multilingual voice reporting in Hindi, English, and Hinglish.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <h3>Incident Management</h3>
+      <img src="screenshots/incidents.png" width="100%" alt="KAIZER Incident Management">
+      <p>Structured incident records with severity, status, and machine information.</p>
+    </td>
+    <td width="50%" align="center">
+      <h3>Machine Insights</h3>
+      <img src="screenshots/machine-insights.png" width="100%" alt="KAIZER Machine Insights">
+      <p>Machine health, maintenance schedules, and active incident monitoring.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <h3>Shift Handover</h3>
+      <img src="screenshots/shift-handover.png" width="100%" alt="KAIZER Shift Handover">
+      <p>Open incident summaries and AI-generated voice briefings for shift continuity.</p>
+    </td>
+    <td width="50%" align="center">
+      <h3>AI Performance & Analytics</h3>
+      <img src="screenshots/ai-performance.png" width="100%" alt="KAIZER AI Performance">
+      <p>LLM response times, processing metrics, safety events, and performance monitoring.</p>
+    </td>
+  </tr>
+</table>

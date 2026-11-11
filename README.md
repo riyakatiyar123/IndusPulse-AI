@@ -247,7 +247,7 @@ One intelligent force. KAIZER.
     </td>
     <td width="50%" align="center">
       <h3>Voice-Based Incident Reporting</h3>
-      <img src="screenshots/voice-reporting.jpeg" width="100%" alt="KAIZER Voice Reporting">
+      <img src="screenshots/voice-reporting.png" width="100%" alt="KAIZER Voice Reporting">
       <p>Multilingual voice reporting in Hindi, English, and Hinglish.</p>
     </td>
   </tr>
